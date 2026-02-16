@@ -6,6 +6,7 @@ import os
 import wandb
 import hydra
 from omegaconf import DictConfig
+from pathlib import Path
 
 _steps = [
     "download",
@@ -50,9 +51,21 @@ def go(config: DictConfig):
             )
 
         if "basic_cleaning" in active_steps:
-            ##################
-            # Implement here #
-            ##################
+            # Implement basic cleaning and load cleaned sample in W&B
+            component_path = Path(hydra.utils.get_original_cwd()) / "src" / "basic_cleaning"
+            _ = mlflow.run(
+                str(component_path),
+                entry_point="main",
+                env_manager="conda",
+                parameters={
+                    "input_artifact": "sample.csv:latest",
+                    "output_artifact": "clean_sample",
+                    "output_type": "cleaned_data",
+                    "output_description": "Cleaned Sample",
+                    "min_price": float(config["etl"]["min_price"]),
+                    "max_price": float(config["etl"]["max_price"])
+                }
+            )
             pass
 
         if "data_check" in active_steps:
