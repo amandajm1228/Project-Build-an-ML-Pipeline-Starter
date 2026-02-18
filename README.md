@@ -179,3 +179,7 @@ Please, make sure all steps are using **the same** python version and that you h
 ## License
 
 [License](LICENSE.txt)
+
+**LINKS to Amanda Mullin public repositories:**
+Github: https://github.com/amandajm1228/Project-Build-an-ML-Pipeline-Starter
+W&B: https://wandb.ai/amanda-j-mullin-western-governors-university/nyc_airbnb/reports/Project-Build-an-ML-Pipeline-Starter--VmlldzoxNTk3MzU0Mw
