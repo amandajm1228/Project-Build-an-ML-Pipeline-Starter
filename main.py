@@ -85,9 +85,18 @@ def go(config: DictConfig):
             pass
 
         if "data_split" in active_steps:
-            ##################
-            # Implement here #
-            ##################
+            data_split_path = Path(hydra.utils.get_original_cwd()) / "components" / "train_val_test_split"
+            _ = mlflow.run(
+                str(data_split_path),
+                "main",
+                env_manager="conda",
+                parameters={
+                    "input":"clean_sample:latest",
+                    "test_size": str(config["modeling"]["test_size"]),
+                    "random_seed": str(config["modeling"]["random_seed"]),
+                    "stratify_by": config["modeling"]["stratify_by"]
+                }
+            )
             pass
 
         if "train_random_forest" in active_steps:
@@ -100,17 +109,35 @@ def go(config: DictConfig):
             # NOTE: use the rf_config we just created as the rf_config parameter for the train_random_forest
             # step
 
-            ##################
-            # Implement here #
-            ##################
+            train_component_path = Path(hydra.utils.get_original_cwd()) / "src" / "train_random_forest"
+            _ = mlflow.run(
+                str(train_component_path),
+                "main",
+                env_manager="conda",
+                parameters = {
+                    "trainval_artifact": "trainval_data.csv:latest",
+                    "val_size": str(config["modeling"]["val_size"]),
+                    "random_seed": str(config["modeling"]["random_seed"]),
+                    "stratify_by": config["modeling"]["stratify_by"],
+                    "rf_config": rf_config,
+                    "max_tfidf_features": str(config["modeling"]["max_tfidf_features"]),
+                    "output_artifact": "random_forest_export"
+                }
+            )
 
             pass
 
         if "test_regression_model" in active_steps:
-
-            ##################
-            # Implement here #
-            ##################
+            test_regression_model_path = Path(hydra.utils.get_original_cwd()) / "components" / "test_regression_model"
+            _ = mlflow.run(
+                str(test_regression_model_path),
+                "main",
+                env_manager="conda",
+                parameters={
+                    "mlflow_model": "random_forest_export:prod",
+                    "test_dataset": "test_data.csv:latest"
+                }
+            )
 
             pass
 
