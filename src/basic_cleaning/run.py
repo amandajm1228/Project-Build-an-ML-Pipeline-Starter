@@ -15,8 +15,6 @@ logger = logging.getLogger()
 def go(args):
 
     run = wandb.init(project="nyc_airbnb", job_type="basic_cleaning", group="cleaning", save_code=True)
-    print("INPUT ARTIFACT:", args.input_artifact)
-    print("OUTPUT ARTIFACT:", args.output_artifact)
     run.config.update(args)
 
     # Download input artifact. This will also log that this script is using this
